@@ -1,6 +1,6 @@
 <?php
 ob_start();
-$page_title = "Đăng nhập";
+$page_title = "Login";
 include '../fooddelivery/includes/header.php';
 include '../fooddelivery/functions/auth.php';
 
@@ -16,7 +16,7 @@ if ($_POST) {
     $password = $_POST['password'] ?? '';
     
     if (empty($username) || empty($password)) {
-        $error = 'Vui lòng nhập đầy đủ thông tin';
+        $error = 'Please enter all required fields.';
     } else {
         $result = login_user($db, $username, $password);
         if ($result['success']) {
@@ -34,7 +34,7 @@ if ($_POST) {
         <div class="col-md-5">
             <div class="card shadow">
                 <div class="card-body p-5">
-                    <h2 class="text-center mb-4">Đăng nhập</h2>
+                    <h2 class="text-center mb-4">Login</h2>
                     <?php if ($error): ?>
                         <div class="alert alert-danger alert-dismissible fade show">
                             <?php echo htmlspecialchars($error); ?>
@@ -44,22 +44,22 @@ if ($_POST) {
                     
                     <form method="POST" novalidate>
                         <div class="mb-3">
-                            <label for="username" class="form-label">Tên đăng nhập</label>
+                            <label for="username" class="form-label">Username</label>
                             <input type="text" class="form-control" id="username" name="username" 
                                    value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>" required>
-                            <div class="invalid-feedback">Vui lòng nhập tên đăng nhập</div>
+                            <div class="invalid-feedback">Please enter your username.</div>
                         </div>
                         
                         <div class="mb-4">
-                            <label for="password" class="form-label">Mật khẩu</label>
+                            <label for="password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="password" name="password" required>
-                            <div class="invalid-feedback">Vui lòng nhập mật khẩu</div>
+                            <div class="invalid-feedback">Please enter your password.</div>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary w-100 mb-3">Đăng nhập</button>
+                        <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
                         
                         <div class="text-center">
-                            <p>Chưa có tài khoản? <a href="register.php" class="text-primary">Đăng ký ngay</a></p>
+                            <p>Don't have an account? <a href="register.php" class="text-primary">Register now</a></p>
                         </div>
                     </form>
                     <hr>

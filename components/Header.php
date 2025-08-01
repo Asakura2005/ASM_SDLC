@@ -10,7 +10,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
         <div class="container-fluid px-3 px-lg-4">
             <!-- Brand Logo -->
-            <a class="navbar-brand d-flex align-items-center <?php echo basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : ''; ?>" href="../fooddelivery/index.php">
+            <a class="navbar-brand d-flex align-items-center <?php echo basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : ''; ?>" href="/php/fooddelivery/index.php">
                 <i class="fas fa-utensils me-2 fs-4"></i>
                 Food Delivery
             </a>

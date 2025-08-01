@@ -1,5 +1,5 @@
 <?php
-$page_title = "Quản lý mã giảm giá";
+$page_title = "Manage Discount Codes";
 include '../includes/header.php';
 include '../functions/auth.php';
 
@@ -21,7 +21,7 @@ if ($_POST) {
         $end_date = $_POST['end_date'] ?: null;
         
         if (empty($code) || $discount_value <= 0) {
-            $error = 'Vui lòng điền đầy đủ thông tin';
+            $error = 'Please fill in all required information';
         } else {
             // Check if code exists
             $check_query = "SELECT discount_id FROM discounts WHERE code = ?";
@@ -29,15 +29,15 @@ if ($_POST) {
             $check_stmt->execute([$code]);
             
             if ($check_stmt->rowCount() > 0) {
-                $error = 'Mã giảm giá đã tồn tại';
+                $error = 'Discount code already exists';
             } else {
                 $query = "INSERT INTO discounts (code, description, discount_type, discount_value, min_order, max_discount, start_date, end_date) 
                           VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                 $stmt = $db->prepare($query);
                 if ($stmt->execute([$code, $description, $discount_type, $discount_value, $min_order, $max_discount, $start_date, $end_date])) {
-                    $success = 'Thêm mã giảm giá thành công';
+                    $success = 'Discount code added successfully';
                 } else {
-                    $error = 'Có lỗi xảy ra khi thêm mã giảm giá';
+                    $error = 'An error occurred while adding the discount code';
                 }
             }
         }
@@ -48,9 +48,9 @@ if ($_POST) {
         $query = "UPDATE discounts SET active = NOT active WHERE discount_id = ?";
         $stmt = $db->prepare($query);
         if ($stmt->execute([$discount_id])) {
-            $success = 'Cập nhật trạng thái thành công';
+            $success = 'Status updated successfully';
         } else {
-            $error = 'Có lỗi xảy ra khi cập nhật trạng thái';
+            $error = 'An error occurred while updating the status';
         }
     }
     
@@ -59,9 +59,9 @@ if ($_POST) {
         $query = "DELETE FROM discounts WHERE discount_id = ?";
         $stmt = $db->prepare($query);
         if ($stmt->execute([$discount_id])) {
-            $success = 'Xóa mã giảm giá thành công';
+            $success = 'Discount code deleted successfully';
         } else {
-            $error = 'Có lỗi xảy ra khi xóa mã giảm giá';
+            $error = 'An error occurred while deleting the discount code';
         }
     }
 }
@@ -75,11 +75,11 @@ $discounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <div class="container my-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Quản lý mã giảm giá</h1>
+        <h1>Manage Discount Codes</h1>
         <div>
-            <a href="index.php" class="btn btn-secondary">Quay lại</a>
+            <a href="index.php" class="btn btn-secondary">Back</a>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDiscountModal">
-                <i class="fas fa-plus me-1"></i>Thêm mã giảm giá
+                <i class="fas fa-plus me-1"></i>Add Discount Code
             </button>
         </div>
     </div>
@@ -104,14 +104,14 @@ $discounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Mã</th>
-                            <th>Mô tả</th>
-                            <th>Loại</th>
-                            <th>Giá trị</th>
-                            <th>Đơn tối thiểu</th>
-                            <th>Thời hạn</th>
-                            <th>Trạng thái</th>
-                            <th>Thao tác</th>
+                            <th>Code</th>
+                            <th>Description</th>
+                            <th>Type</th>
+                            <th>Value</th>
+                            <th>Min. Order</th>
+                            <th>Validity</th>
+                            <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -120,14 +120,14 @@ $discounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <td><strong><?php echo htmlspecialchars($discount['code']); ?></strong></td>
                             <td><?php echo htmlspecialchars($discount['description']); ?></td>
                             <td>
-                                <?php echo $discount['discount_type'] == 'percent' ? 'Phần trăm' : 'Số tiền'; ?>
+                                <?php echo $discount['discount_type'] == 'percent' ? 'Percentage' : 'Fixed Amount'; ?>
                             </td>
                             <td>
                                 <?php 
                                 if ($discount['discount_type'] == 'percent') {
                                     echo '<span class="badge bg-info">' . $discount['discount_value'] . '%</span>';
                                     if ($discount['max_discount']) {
-                                        echo '<br><small class="text-muted">Tối đa: ' . number_format($discount['max_discount']) . 'đ</small>';
+                                        echo '<br><small class="text-muted">Max: ' . number_format($discount['max_discount']) . 'đ</small>';
                                     }
                                 } else {
                                     echo '<span class="badge bg-success">' . number_format($discount['discount_value']) . 'đ</span>';
@@ -138,7 +138,7 @@ $discounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <?php if ($discount['min_order'] > 0): ?>
                                     <span class="text-primary"><?php echo number_format($discount['min_order']); ?>đ</span>
                                 <?php else: ?>
-                                    <span class="text-muted">Không yêu cầu</span>
+                                    <span class="text-muted">Not required</span>
                                 <?php endif; ?>
                             </td>
                             <td>
@@ -155,14 +155,14 @@ $discounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     </div>
                                 <?php else: ?>
                                     <span class="text-success">
-                                        <i class="fas fa-infinity me-1"></i>Không giới hạn
+                                        <i class="fas fa-infinity me-1"></i>Unlimited
                                     </span>
                                 <?php endif; ?>
                             </td>
                             <td>
                                 <span class="badge bg-<?php echo $discount['active'] ? 'success' : 'danger'; ?> d-flex align-items-center">
                                     <i class="fas fa-<?php echo $discount['active'] ? 'check-circle' : 'times-circle'; ?> me-1"></i>
-                                    <?php echo $discount['active'] ? 'Hoạt động' : 'Tạm dừng'; ?>
+                                    <?php echo $discount['active'] ? 'Active' : 'Inactive'; ?>
                                 </span>
                                 <?php
                                 // Check if discount is expired
@@ -170,7 +170,7 @@ $discounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 $end_date = $discount['end_date'] ? new DateTime($discount['end_date']) : null;
                                 if ($end_date && $end_date < $now): ?>
                                     <br><small class="text-danger">
-                                        <i class="fas fa-exclamation-triangle me-1"></i>Đã hết hạn
+                                        <i class="fas fa-exclamation-triangle me-1"></i>Expired
                                     </small>
                                 <?php endif; ?>
                             </td>
@@ -180,19 +180,19 @@ $discounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <input type="hidden" name="discount_id" value="<?php echo $discount['discount_id']; ?>">
                                         <button type="submit" name="toggle_status" 
                                                 class="btn btn-sm btn-outline-<?php echo $discount['active'] ? 'warning' : 'success'; ?>"
-                                                title="<?php echo $discount['active'] ? 'Tạm dừng' : 'Kích hoạt'; ?>">
+                                                title="<?php echo $discount['active'] ? 'Deactivate' : 'Activate'; ?>">
                                             <i class="fas fa-<?php echo $discount['active'] ? 'pause' : 'play'; ?>"></i>
                                         </button>
                                     </form>
                                     <button type="button" class="btn btn-sm btn-outline-primary" 
                                             onclick="copyDiscountCode('<?php echo $discount['code']; ?>')"
-                                            title="Sao chép mã">
+                                            title="Copy Code">
                                         <i class="fas fa-copy"></i>
                                     </button>
-                                    <form method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa mã giảm giá này?')">
+                                    <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this discount code?')">
                                         <input type="hidden" name="discount_id" value="<?php echo $discount['discount_id']; ?>">
                                         <button type="submit" name="delete_discount" class="btn btn-sm btn-outline-danger"
-                                                title="Xóa mã giảm giá">
+                                                title="Delete discount code">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
@@ -212,7 +212,7 @@ $discounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Thêm mã giảm giá mới</h5>
+                <h5 class="modal-title">Add New Discount Code</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST">
@@ -220,39 +220,39 @@ $discounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Mã giảm giá *</label>
+                                <label class="form-label">Discount Code *</label>
                                 <input type="text" class="form-control" name="code" required 
-                                       style="text-transform: uppercase;" placeholder="VD: GIAM10">
+                                       style="text-transform: uppercase;" placeholder="E.g., SALE10">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Loại giảm giá *</label>
+                                <label class="form-label">Discount Type *</label>
                                 <select class="form-select" name="discount_type" required onchange="toggleDiscountType(this)">
-                                    <option value="percent">Phần trăm (%)</option>
-                                    <option value="fixed">Số tiền cố định (đ)</option>
+                                    <option value="percent">Percentage (%)</option>
+                                    <option value="fixed">Fixed Amount (đ)</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     
                     <div class="mb-3">
-                        <label class="form-label">Mô tả</label>
+                        <label class="form-label">Description</label>
                         <textarea class="form-control" name="description" rows="2" 
-                                  placeholder="Mô tả về mã giảm giá"></textarea>
+                                  placeholder="Description of the discount code"></textarea>
                     </div>
                     
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Giá trị giảm *</label>
+                                <label class="form-label">Discount Value *</label>
                                 <input type="number" class="form-control" name="discount_value" 
                                        min="0" step="0.01" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Đơn hàng tối thiểu</label>
+                                <label class="form-label">Minimum Order</label>
                                 <input type="number" class="form-control" name="min_order" 
                                        min="0" step="1000" value="0">
                             </div>
@@ -260,29 +260,29 @@ $discounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                     
                     <div class="mb-3" id="maxDiscountField">
-                        <label class="form-label">Giảm tối đa (chỉ áp dụng cho phần trăm)</label>
+                        <label class="form-label">Max Discount (for percentage only)</label>
                         <input type="number" class="form-control" name="max_discount" 
-                               min="0" step="1000" placeholder="Để trống nếu không giới hạn">
+                               min="0" step="1000" placeholder="Leave blank for no limit">
                     </div>
                     
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Ngày bắt đầu</label>
+                                <label class="form-label">Start Date</label>
                                 <input type="date" class="form-control" name="start_date">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Ngày kết thúc</label>
+                                <label class="form-label">End Date</label>
                                 <input type="date" class="form-control" name="end_date">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" name="add_discount" class="btn btn-primary">Thêm mã giảm giá</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" name="add_discount" class="btn btn-primary">Add Discount Code</button>
                 </div>
             </form>
         </div>
@@ -314,7 +314,7 @@ function copyDiscountCode(code) {
         toast.innerHTML = `
             <div class="d-flex">
                 <div class="toast-body">
-                    <i class="fas fa-check me-2"></i>Đã sao chép mã: ${code}
+                    <i class="fas fa-check me-2"></i>Copied code: ${code}
                 </div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
@@ -330,7 +330,7 @@ function copyDiscountCode(code) {
         });
     }).catch(function(err) {
         console.error('Could not copy text: ', err);
-        alert('Không thể sao chép mã. Vui lòng sao chép thủ công: ' + code);
+        alert('Could not copy code. Please copy manually: ' + code);
     });
 }
 </script>

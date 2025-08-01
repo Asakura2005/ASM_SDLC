@@ -8,18 +8,18 @@ if (!is_logged_in()) {
     exit;
 }
 
-$page_title = 'Hồ sơ cá nhân';
-// Khởi tạo kết nối PDO
+$page_title = 'Profile';
+// Initialize PDO connection
 $database = new Database();
 $pdo = $database->getConnection();
-// Lấy thông tin user từ database
+// Get user information from the database
 $user = null;
 $stmt_user = $pdo->prepare("SELECT * FROM users WHERE user_id = ?");
 $stmt_user->execute([$_SESSION['user_id']]);
 if ($stmt_user->rowCount() > 0) {
     $user = $stmt_user->fetch(PDO::FETCH_ASSOC);
 } else {
-    // fallback nếu không tìm thấy user
+    // Fallback if user is not found
     $user = [
         'full_name' => '',
         'email' => '',
@@ -51,15 +51,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    
     
     if (empty($full_name)) {
-        $error = 'Họ tên không được để trống.';
+        $error = 'Full name cannot be empty.';
     } else {
         $stmt = $pdo->prepare("UPDATE users SET full_name = ?, phone = ? WHERE user_id = ?");
         if ($stmt->execute([$full_name, $phone, $_SESSION['user_id']])) {
-            $success = 'Cập nhật thông tin thành công.';
+            $success = 'Profile updated successfully.';
             $user['full_name'] = $full_name;
             $user['phone'] = $phone;
         } else {
-            $error = 'Có lỗi xảy ra. Vui lòng thử lại.';
+            $error = 'An error occurred. Please try again.';
         }
     }
 }
@@ -77,7 +77,7 @@ include 'includes/header.php';
                     </div>
                     <h5><?php echo htmlspecialchars($user['full_name']); ?></h5>
                     <p class="text-muted"><?php echo htmlspecialchars($user['email']); ?></p>
-                    <small class="text-muted">Thành viên từ <?php echo date('d/m/Y', strtotime($user['created_at'])); ?></small>
+                    <small class="text-muted">Member since <?php echo date('d/m/Y', strtotime($user['created_at'])); ?></small>
                 </div>
             </div>
         </div>
@@ -87,10 +87,10 @@ include 'includes/header.php';
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" data-bs-toggle="tab" href="#profile-info">Thông tin cá nhân</a>
+                            <a class="nav-link active" data-bs-toggle="tab" href="#profile-info">Profile Information</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#order-history">Lịch sử mua hàng</a>
+                            <a class="nav-link" data-bs-toggle="tab" href="#order-history">Order History</a>
                         </li>
                     </ul>
                 </div>
@@ -109,7 +109,7 @@ include 'includes/header.php';
                             
                             <form method="POST">
                                 <div class="mb-3">
-                                    <label for="full_name" class="form-label">Họ tên</label>
+                                    <label for="full_name" class="form-label">Full Name</label>
                                     <input type="text" class="form-control" id="full_name" name="full_name" 
                                            value="<?php echo htmlspecialchars($user['full_name']); ?>" required>
                                 </div>
@@ -118,11 +118,11 @@ include 'includes/header.php';
                                     <label for="email" class="form-label">Email</label>
                                     <input type="email" class="form-control" id="email" 
                                            value="<?php echo htmlspecialchars($user['email']); ?>" disabled>
-                                    <small class="form-text text-muted">Email không thể thay đổi</small>
+                                    <small class="form-text text-muted">Email cannot be changed.</small>
                                 </div>
                                 
                                 <div class="mb-3">
-                                    <label for="phone" class="form-label">Số điện thoại</label>
+                                    <label for="phone" class="form-label">Phone Number</label>
                                     <input type="tel" class="form-control" id="phone" name="phone" 
                                            value="<?php echo htmlspecialchars($user['phone']); ?>">
                                 </div>
@@ -130,7 +130,7 @@ include 'includes/header.php';
                                 
                                 
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-2"></i>Cập nhật thông tin
+                                    <i class="fas fa-save me-2"></i>Update Profile
                                 </button>
                             </form>
                         </div>
@@ -140,9 +140,9 @@ include 'includes/header.php';
                             <?php if (empty($orders)): ?>
                             <div class="text-center py-5">
                                 <i class="fas fa-shopping-bag fa-3x text-muted mb-3"></i>
-                                <h5>Chưa có đơn hàng nào</h5>
-                                <p class="text-muted">Bạn chưa thực hiện giao dịch nào.</p>
-                                <a href="index.php" class="btn btn-primary">Xem thực đơn</a>
+                                <h5>No orders yet</h5>
+                                <p class="text-muted">You have not made any transactions yet.</p>
+                                <a href="index.php" class="btn btn-primary">View Menu</a>
                             </div>
                             <?php else: ?>
                             <div class="order-history">
@@ -152,7 +152,7 @@ include 'includes/header.php';
                                         <div class="card-body">
                                             <div class="row align-items-center">
                                                 <div class="col-md-8">
-                                                    <h6 class="mb-1">Đơn hàng #<?php echo $order['order_id']; ?></h6>
+                                                    <h6 class="mb-1">Order #<?php echo $order['order_id']; ?></h6>
                                                     <p class="mb-1 text-muted"><?php echo $order['product_list']; ?></p>
                                                     <small class="text-muted">
                                                         <i class="fas fa-calendar me-1"></i>
@@ -168,10 +168,10 @@ include 'includes/header.php';
                                                         ?>">
                                                             <?php 
                                                                 $status_text = [
-                                                                    'pending' => 'Chờ xử lý',
-                                                                    'confirmed' => 'Đã xác nhận',
-                                                                    'delivered' => 'Đã giao',
-                                                                    'cancelled' => 'Đã hủy'
+                                                                    'pending' => 'Pending',
+                                                                    'confirmed' => 'Confirmed',
+                                                                    'delivered' => 'Delivered',
+                                                                    'cancelled' => 'Cancelled'
                                                                 ];
                                                                 echo $status_text[$order['status']];
                                                             ?>

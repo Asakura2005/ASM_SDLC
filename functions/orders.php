@@ -52,10 +52,10 @@ function create_order($db, $user_id, $discount_code = null, $delivery_address = 
         $db->commit();
         clear_cart();
         
-        return ['success' => true, 'order_id' => $order_id, 'message' => 'Đặt hàng thành công'];
+        return ['success' => true, 'order_id' => $order_id, 'message' => 'Order placed successfully.'];
     } catch (Exception $e) {
         $db->rollBack();
-        return ['success' => false, 'message' => 'Lỗi khi đặt hàng: ' . $e->getMessage()];
+        return ['success' => false, 'message' => 'Error creating order: ' . $e->getMessage()];
     }
 }
 

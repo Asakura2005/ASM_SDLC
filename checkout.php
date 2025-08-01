@@ -1,6 +1,6 @@
 <?php
 ob_start();
-$page_title = "Thanh toán";
+$page_title = "Checkout";
 include '../fooddelivery/includes/header.php';
 include '../fooddelivery/functions/auth.php';
 include_once '../fooddelivery/functions/cart.php';
@@ -36,12 +36,12 @@ if (isset($_POST['apply_discount'])) {
             if ($total >= $discount['min_order']) {
                 $discount_amount = calculate_discount_amount($discount, $total);
                 $discount_info = $discount;
-                $success = 'Áp dụng mã giảm giá thành công';
+                $success = 'Discount code applied successfully.';
             } else {
-                $error = 'Đơn hàng tối thiểu ' . number_format($discount['min_order']) . 'đ để sử dụng mã này';
+                $error = 'A minimum order of ' . number_format($discount['min_order']) . 'đ is required to use this code.';
             }
         } else {
-            $error = 'Mã giảm giá không hợp lệ hoặc đã hết hạn';
+            $error = 'Invalid or expired discount code.';
         }
     }
 }
@@ -54,7 +54,7 @@ if (isset($_POST['place_order'])) {
     $delivery_notes = trim($_POST['delivery_notes'] ?? '');
     
     if (empty($payment_method) || empty($selected_address_id)) {
-        $error = 'Vui lòng chọn địa chỉ giao hàng và phương thức thanh toán';
+        $error = 'Please select a delivery address and payment method.';
     } else {
         // Get selected address
         $address_query = "SELECT * FROM user_addresses WHERE address_id = ? AND user_id = ?";
@@ -63,7 +63,7 @@ if (isset($_POST['place_order'])) {
         $selected_address = $address_stmt->fetch(PDO::FETCH_ASSOC);
         
         if (!$selected_address) {
-            $error = 'Địa chỉ giao hàng không hợp lệ';
+            $error = 'Invalid delivery address.';
         } else {
             $delivery_address = [
                 'full_address' => $selected_address['full_address'],
@@ -84,7 +84,7 @@ if (isset($_POST['place_order'])) {
             $payment_stmt = $db->prepare($payment_query);
             $payment_stmt->execute([$result['order_id'], $payment_method, $final_total]);
             
-            $_SESSION['success'] = 'Đặt hàng thành công! Mã đơn hàng: #' . $result['order_id'];
+            $_SESSION['success'] = 'Order placed successfully! Order ID: #' . $result['order_id'];
             header('Location: orders.php');
             exit();
         } else {
@@ -97,7 +97,7 @@ $final_total = $total - $discount_amount;
 ?>
 
 <div class="container my-4">
-    <h1 class="mb-4">Thanh toán</h1>
+    <h1 class="mb-4">Checkout</h1>
     
     <?php if ($error): ?>
         <div class="alert alert-danger alert-dismissible fade show">
@@ -118,18 +118,18 @@ $final_total = $total - $discount_amount;
             <!-- Delivery Address Section -->
             <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Địa chỉ giao hàng</h5>
+                    <h5 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Delivery Address</h5>
                     <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addressModal">
-                        <i class="fas fa-plus me-1"></i>Thêm địa chỉ
+                        <i class="fas fa-plus me-1"></i>Add Address
                     </button>
                 </div>
                 <div class="card-body">
                     <?php if (empty($user_addresses)): ?>
                         <div class="text-center py-3">
                             <i class="fas fa-map-marker-alt fa-2x text-muted mb-2"></i>
-                            <p class="text-muted">Chưa có địa chỉ giao hàng</p>
+                            <p class="text-muted">No delivery addresses found.</p>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addressModal">
-                                Thêm địa chỉ đầu tiên
+                                Add your first address
                             </button>
                         </div>
                     <?php else: ?>
@@ -150,7 +150,7 @@ $final_total = $total - $discount_amount;
                                                 <h6 class="mb-1">
                                                     <?php echo htmlspecialchars($address['address_name']); ?>
                                                     <?php if ($address['is_default']): ?>
-                                                        <span class="badge bg-primary ms-2">Mặc định</span>
+                                                        <span class="badge bg-primary ms-2">Default</span>
                                                     <?php endif; ?>
                                                 </h6>
                                                 <p class="mb-0 text-muted">
@@ -162,7 +162,7 @@ $final_total = $total - $discount_amount;
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             <form method="POST" action="delete_address.php" style="display:inline;" 
-                                                  onsubmit="return confirm('Bạn có chắc muốn xóa địa chỉ này?');">
+                                                  onsubmit="return confirm('Are you sure you want to delete this address?');">
                                                 <input type="hidden" name="address_id" value="<?php echo $address['address_id']; ?>">
                                                 <button type="submit" class="btn btn-sm btn-outline-danger">
                                                     <i class="fas fa-trash"></i>
@@ -181,14 +181,14 @@ $final_total = $total - $discount_amount;
             
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">Chi tiết đơn hàng</h5>
+                    <h5 class="mb-0">Order Details</h5>
                 </div>
                 <div class="card-body">
                     <?php foreach ($cart_items as $item): ?>
                     <div class="d-flex justify-content-between align-items-center border-bottom py-2">
                         <div>
                             <h6 class="mb-0"><?php echo htmlspecialchars($item['name']); ?></h6>
-                            <small class="text-muted">Số lượng: <?php echo $item['quantity']; ?></small>
+                            <small class="text-muted">Quantity: <?php echo $item['quantity']; ?></small>
                         </div>
                         <span><?php echo number_format($item['subtotal']); ?>đ</span>
                     </div>
@@ -199,20 +199,20 @@ $final_total = $total - $discount_amount;
             <!-- Discount Code -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">Mã giảm giá</h5>
+                    <h5 class="mb-0">Discount Code</h5>
                 </div>
                 <div class="card-body">
                     <form method="POST">
                         <div class="input-group">
                             <input type="text" class="form-control" name="discount_code" 
-                                   placeholder="Nhập mã giảm giá" value="<?php echo htmlspecialchars($discount_code); ?>">
-                            <button type="submit" name="apply_discount" class="btn btn-outline-primary">Áp dụng</button>
+                                   placeholder="Enter discount code" value="<?php echo htmlspecialchars($discount_code); ?>">
+                            <button type="submit" name="apply_discount" class="btn btn-outline-primary">Apply</button>
                         </div>
                         <?php if ($discount_info && $discount_amount > 0): ?>
                             <div class="mt-2 p-2 bg-success bg-opacity-10 border border-success rounded">
                                 <small class="text-success">
                                     <i class="fas fa-check-circle me-1"></i>
-                                    Mã <strong><?php echo htmlspecialchars($discount_code); ?></strong> đã được áp dụng
+                                    Code <strong><?php echo htmlspecialchars($discount_code); ?></strong> has been applied
                                     (<?php echo format_discount_display($discount_info, $discount_amount); ?>)
                                 </small>
                             </div>
@@ -225,26 +225,26 @@ $final_total = $total - $discount_amount;
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">Tóm tắt thanh toán</h5>
+                    <h5 class="mb-0">Payment Summary</h5>
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-2">
-                        <span>Tạm tính:</span>
+                        <span>Subtotal:</span>
                         <span><?php echo number_format($total); ?>đ</span>
                     </div>
                     <?php if ($discount_amount > 0): ?>
                     <div class="d-flex justify-content-between mb-2 text-success">
-                        <span>Giảm giá:</span>
+                        <span>Discount:</span>
                         <span>-<?php echo number_format($discount_amount); ?>đ</span>
                     </div>
                     <?php endif; ?>
                     <div class="d-flex justify-content-between mb-2">
-                        <span>Phí giao hàng:</span>
-                        <span class="text-success">Miễn phí</span>
+                        <span>Shipping Fee:</span>
+                        <span class="text-success">Free</span>
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between mb-3">
-                        <strong>Tổng cộng:</strong>
+                        <strong>Total:</strong>
                         <strong class="text-primary"><?php echo number_format($final_total); ?>đ</strong>
                     </div>
                     
@@ -252,33 +252,33 @@ $final_total = $total - $discount_amount;
                         <input type="hidden" name="discount_code" value="<?php echo htmlspecialchars($discount_code); ?>">
                         <input type="hidden" name="address_id" id="selected_address_id" value="">
                         
-                        <h6 class="mb-3">Phương thức thanh toán</h6>
+                        <h6 class="mb-3">Payment Method</h6>
                         <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="payment_method" 
                                        id="cash" value="cash" required>
                                 <label class="form-check-label" for="cash">
-                                    <i class="fas fa-money-bill-wave me-2"></i>Tiền mặt
+                                    <i class="fas fa-money-bill-wave me-2"></i>Cash on Delivery
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="payment_method" 
                                        id="credit_card" value="credit_card" required>
                                 <label class="form-check-label" for="credit_card">
-                                    <i class="fas fa-credit-card me-2"></i>Thẻ tín dụng
+                                    <i class="fas fa-credit-card me-2"></i>Credit Card
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="payment_method" 
                                        id="e_wallet" value="e_wallet" required>
                                 <label class="form-check-label" for="e_wallet">
-                                    <i class="fas fa-mobile-alt me-2"></i>Ví điện tử
+                                    <i class="fas fa-mobile-alt me-2"></i>E-wallet
                                 </label>
                             </div>
                         </div>
                         
                         <button type="submit" name="place_order" class="btn btn-primary w-100">
-                            <i class="fas fa-check me-1"></i>Đặt hàng
+                            <i class="fas fa-check me-1"></i>Place Order
                         </button>
                     </form>
                 </div>
@@ -292,7 +292,7 @@ $final_total = $total - $discount_amount;
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Thêm địa chỉ giao hàng</h5>
+                <h5 class="modal-title">Add Delivery Address</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="addressForm" action="manage_address.php" method="POST">
@@ -301,16 +301,16 @@ $final_total = $total - $discount_amount;
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Tên địa chỉ *</label>
+                                <label class="form-label">Address Name *</label>
                                 <input type="text" class="form-control" name="address_name" 
-                                       placeholder="Ví dụ: Nhà, Văn phòng" required>
+                                       placeholder="E.g., Home, Office" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Thành phố *</label>
+                                <label class="form-label">City *</label>
                                 <select class="form-select" name="city" required>
-                                    <option value="">Chọn thành phố</option>
+                                    <option value="">Select a city</option>
                                     <?php foreach (get_vietnam_provinces() as $province): ?>
                                         <option value="<?php echo $province; ?>"><?php echo $province; ?></option>
                                     <?php endforeach; ?>
@@ -320,25 +320,25 @@ $final_total = $total - $discount_amount;
                     </div>
                     
                     <div class="mb-3">
-                        <label class="form-label">Địa chỉ chi tiết *</label>
+                        <label class="form-label">Detailed Address *</label>
                         <textarea class="form-control" name="full_address" rows="2" 
-                                  placeholder="Số nhà, tên đường, phường/xã, quận/huyện" required></textarea>
+                                  placeholder="House number, street name, ward/commune, district/city" required></textarea>
                     </div>
                     
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Tỉnh/Thành phố</label>
+                                <label class="form-label">State/Province</label>
                                 <input type="text" class="form-control" name="state" 
-                                       placeholder="Ví dụ: Ho Chi Minh">
+                                       placeholder="E.g., Ho Chi Minh">
                             </div>
                         </div>                   
                     </div>
                     
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" class="btn btn-primary">Lưu địa chỉ</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Address</button>
                 </div>
             </form>
         </div>
@@ -393,22 +393,24 @@ document.addEventListener('DOMContentLoaded', function() {
     updateHiddenFields();
     
     // Form validation
-    checkoutForm.addEventListener('submit', function(e) {
-        const selectedAddress = document.querySelector('input[name="address_id"]:checked');
-        const selectedPayment = document.querySelector('input[name="payment_method"]:checked');
-        
-        if (!selectedAddress) {
-            e.preventDefault();
-            alert('Vui lòng chọn địa chỉ giao hàng');
-            return false;
-        }
-        
-        if (!selectedPayment) {
-            e.preventDefault();
-            alert('Vui lòng chọn phương thức thanh toán');
-            return false;
-        }
-    });
+    if(checkoutForm) {
+        checkoutForm.addEventListener('submit', function(e) {
+            const selectedAddress = document.querySelector('input[name="address_id"]:checked');
+            const selectedPayment = document.querySelector('input[name="payment_method"]:checked');
+            
+            if (!selectedAddress) {
+                e.preventDefault();
+                alert('Please select a delivery address');
+                return false;
+            }
+            
+            if (!selectedPayment) {
+                e.preventDefault();
+                alert('Please select a payment method');
+                return false;
+            }
+        });
+    }
 });
 
 function editAddress(addressId) {

@@ -1,5 +1,5 @@
 <?php
-$page_title = "Quản lý Cửa Hàng";
+$page_title = "Store Management";
 include '../includes/header.php';
 include '../functions/auth.php';
 
@@ -8,7 +8,7 @@ require_admin();
 $error = '';
 $success = '';
 
-// Kết nối PDO từ config
+// PDO connection from config
 require_once '../config/database.php';
 
 // Handle form submissions
@@ -20,14 +20,14 @@ if ($_POST) {
         $owner_id = !empty($_POST['owner_id']) ? (int)$_POST['owner_id'] : null;
         
         if (empty($name) || empty($address) || empty($phone)) {
-            $error = 'Vui lòng điền đầy đủ thông tin bắt buộc';
+            $error = 'Please fill in all required fields.';
         } else {
             $query = "INSERT INTO restaurants (name, address, phone, owner_id) VALUES (?, ?, ?, ?)";
             $stmt = $db->prepare($query);
             if ($stmt->execute([$name, $address, $phone, $owner_id])) {
-                $success = 'Thêm cửa hàng thành công';
+                $success = 'Store added successfully.';
             } else {
-                $error = 'Có lỗi xảy ra khi thêm cửa hàng';
+                $error = 'An error occurred while adding the store.';
             }
         }
     }
@@ -40,14 +40,14 @@ if ($_POST) {
         $owner_id = !empty($_POST['owner_id']) ? (int)$_POST['owner_id'] : null;
         
         if (empty($name) || empty($address) || empty($phone)) {
-            $error = 'Vui lòng điền đầy đủ thông tin bắt buộc';
+            $error = 'Please fill in all required fields.';
         } else {
             $query = "UPDATE restaurants SET name = ?, address = ?, phone = ?, owner_id = ? WHERE restaurant_id = ?";
             $stmt = $db->prepare($query);
             if ($stmt->execute([$name, $address, $phone, $owner_id, $restaurant_id])) {
-                $success = 'Cập nhật cửa hàng thành công';
+                $success = 'Store updated successfully.';
             } else {
-                $error = 'Có lỗi xảy ra khi cập nhật cửa hàng';
+                $error = 'An error occurred while updating the store.';
             }
         }
     }
@@ -55,21 +55,21 @@ if ($_POST) {
     if (isset($_POST['delete_store'])) {
         $restaurant_id = (int)$_POST['restaurant_id'];
         
-        // Kiểm tra xem có món ăn nào thuộc cửa hàng này không
+        // Check if there are any menu items belonging to this store
         $check_query = "SELECT COUNT(*) FROM menu_items WHERE restaurant_id = ?";
         $check_stmt = $db->prepare($check_query);
         $check_stmt->execute([$restaurant_id]);
         $menu_count = $check_stmt->fetchColumn();
         
         if ($menu_count > 0) {
-            $error = 'Không thể xóa cửa hàng này vì còn có món ăn liên quan. Vui lòng xóa tất cả món ăn trước.';
+            $error = 'Cannot delete this store because it has associated menu items. Please delete all related menu items first.';
         } else {
             $query = "DELETE FROM restaurants WHERE restaurant_id = ?";
             $stmt = $db->prepare($query);
             if ($stmt->execute([$restaurant_id])) {
-                $success = 'Xóa cửa hàng thành công';
+                $success = 'Store deleted successfully.';
             } else {
-                $error = 'Có lỗi xảy ra khi xóa cửa hàng';
+                $error = 'An error occurred while deleting the store.';
             }
         }
     }
@@ -93,11 +93,11 @@ $users = $user_stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <div class="container my-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Quản lý Cửa Hàng</h1>
+        <h1>Store Management</h1>
         <div>
-            <a href="index.php" class="btn btn-secondary">Quay lại</a>
+            <a href="index.php" class="btn btn-secondary">Go Back</a>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStoreModal">
-                <i class="fas fa-plus me-1"></i>Thêm cửa hàng
+                <i class="fas fa-plus me-1"></i>Add Store
             </button>
         </div>
     </div>
@@ -121,8 +121,8 @@ $users = $user_stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php if (empty($restaurants)): ?>
                 <div class="text-center py-4">
                     <i class="fas fa-store fa-3x text-muted mb-3"></i>
-                    <h5 class="text-muted">Chưa có cửa hàng nào</h5>
-                    <p class="text-muted">Nhấn nút "Thêm cửa hàng" để bắt đầu</p>
+                    <h5 class="text-muted">No stores found.</h5>
+                    <p class="text-muted">Click the "Add Store" button to get started.</p>
                 </div>
             <?php else: ?>
                 <div class="table-responsive">
@@ -130,11 +130,11 @@ $users = $user_stmt->fetchAll(PDO::FETCH_ASSOC);
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Tên cửa hàng</th>
-                                <th>Địa chỉ</th>
-                                <th>Số điện thoại</th>
-                                <th>Chủ sở hữu</th>
-                                <th>Thao tác</th>
+                                <th>Store Name</th>
+                                <th>Address</th>
+                                <th>Phone Number</th>
+                                <th>Owner</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -154,7 +154,7 @@ $users = $user_stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <?php if ($restaurant['owner_name']): ?>
                                         <span class="badge bg-info"><?php echo htmlspecialchars($restaurant['owner_name']); ?></span>
                                     <?php else: ?>
-                                        <span class="text-muted">Chưa có</span>
+                                        <span class="text-muted">Not set</span>
                                     <?php endif; ?>
                                 </td>
                                 <td>
@@ -162,7 +162,7 @@ $users = $user_stmt->fetchAll(PDO::FETCH_ASSOC);
                                             data-bs-toggle="modal" data-bs-target="#editStoreModal<?php echo $restaurant['restaurant_id']; ?>">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <form method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa cửa hàng này? Tất cả món ăn liên quan cũng sẽ bị ảnh hưởng.')">
+                                    <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this store? This action cannot be undone.')">
                                         <input type="hidden" name="restaurant_id" value="<?php echo $restaurant['restaurant_id']; ?>">
                                         <button type="submit" name="delete_store" class="btn btn-sm btn-outline-danger">
                                             <i class="fas fa-trash"></i>
@@ -179,13 +179,13 @@ $users = $user_stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
 
-<!-- Edit Store Modals - Đặt bên ngoài table để tránh flickering -->
+<!-- Edit Store Modals - Placed outside the table to prevent flickering -->
 <?php foreach ($restaurants as $restaurant): ?>
 <div class="modal fade" id="editStoreModal<?php echo $restaurant['restaurant_id']; ?>" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Sửa cửa hàng</h5>
+                <h5 class="modal-title">Edit Store</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST">
@@ -194,27 +194,27 @@ $users = $user_stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Tên cửa hàng *</label>
+                                <label class="form-label">Store Name *</label>
                                 <input type="text" class="form-control" name="name" 
                                        value="<?php echo htmlspecialchars($restaurant['name']); ?>" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Số điện thoại *</label>
+                                <label class="form-label">Phone Number *</label>
                                 <input type="text" class="form-control" name="phone" 
                                        value="<?php echo htmlspecialchars($restaurant['phone']); ?>" required>
                             </div>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Địa chỉ *</label>
+                        <label class="form-label">Address *</label>
                         <textarea class="form-control" name="address" rows="2" required><?php echo htmlspecialchars($restaurant['address']); ?></textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Chủ sở hữu</label>
+                        <label class="form-label">Owner</label>
                         <select class="form-select" name="owner_id">
-                            <option value="">Chọn chủ sở hữu</option>
+                            <option value="">Select an owner</option>
                             <?php foreach ($users as $user): ?>
                                 <option value="<?php echo $user['user_id']; ?>" 
                                         <?php echo $restaurant['owner_id'] == $user['user_id'] ? 'selected' : ''; ?>>
@@ -225,8 +225,8 @@ $users = $user_stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" name="update_store" class="btn btn-primary">Cập nhật</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" name="update_store" class="btn btn-primary">Update</button>
                 </div>
             </form>
         </div>
@@ -239,7 +239,7 @@ $users = $user_stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Thêm cửa hàng mới</h5>
+                <h5 class="modal-title">Add New Store</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST">
@@ -247,25 +247,25 @@ $users = $user_stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Tên cửa hàng *</label>
+                                <label class="form-label">Store Name *</label>
                                 <input type="text" class="form-control" name="name" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Số điện thoại *</label>
+                                <label class="form-label">Phone Number *</label>
                                 <input type="text" class="form-control" name="phone" required>
                             </div>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Địa chỉ *</label>
+                        <label class="form-label">Address *</label>
                         <textarea class="form-control" name="address" rows="2" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Chủ sở hữu</label>
+                        <label class="form-label">Owner</label>
                         <select class="form-select" name="owner_id">
-                            <option value="">Chọn chủ sở hữu</option>
+                            <option value="">Select an owner</option>
                             <?php foreach ($users as $user): ?>
                                 <option value="<?php echo $user['user_id']; ?>">
                                     <?php echo htmlspecialchars($user['username']); ?>
@@ -275,8 +275,8 @@ $users = $user_stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" name="add_store" class="btn btn-primary">Thêm cửa hàng</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" name="add_store" class="btn btn-primary">Add Store</button>
                 </div>
             </form>
         </div>

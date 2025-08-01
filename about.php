@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Về Chúng Tôi - Đội Ngũ Phát Triển</title>
+    <title>About Us - The Development Team</title>
     <?php include '../fooddelivery/includes/header.php'; ?>
 </head>
 
@@ -12,45 +12,45 @@
     <?php
     $teamMembers = [
         [
-            'name' => 'Trần Tiến Hưng',
+            'name' => 'Tran Tien Hung',
             'position' => 'Team Leader & Full-Stack Developer',
             'avatar' => 'TTH',
-            'description' => 'Với hơn 2 năm kinh nghiệm trong phát triển web, An chịu trách nhiệm lãnh đạo dự án và phát triển các tính năng chính.',
+            'description' => 'With over 2 years of experience in web development, Hung is responsible for leading the project and developing key features.',
             'skills' => ['PHP', 'JavaScript', 'HTML', 'MySQL']
         ],
         [
-            'name' => 'Nguyễn Tiến Dương',
+            'name' => 'Nguyen Tien Duong',
             'position' => 'Frontend Developer',
             'avatar' => 'NTD',
-            'description' => 'Chuyên gia về giao diện người dùng với khả năng thiết kế UI/UX đẹp mắt và trải nghiệm người dùng tốt.',
+            'description' => 'A user interface expert with the ability to design beautiful UI/UX and provide a great user experience.',
             'skills' => ['HTML/CSS', 'JavaScript', 'Vue.js', 'Sass', 'Figma']
         ],
         [
-            'name' => 'Đoàn Minh Đức',
+            'name' => 'Doan Minh Duc',
             'position' => 'Backend Developer',
             'avatar' => 'DMD',
-            'description' => 'Chuyên về phát triển backend, quản lý cơ sở dữ liệu và tối ưu hóa hiệu suất hệ thống.',
+            'description' => 'Specializes in backend development, database management, and system performance optimization.',
             'skills' => ['PHP', 'Node.js', 'MongoDB', 'Redis', 'AWS']
         ],
         [
-            'name' => 'Nguyễn Duy Khoa',
+            'name' => 'Nguyen Duy Khoa',
             'position' => 'UI/UX Designer',
             'avatar' => 'NDK',
-            'description' => 'Thiết kế giao diện và trải nghiệm người dùng, đảm bảo sản phẩm có tính thẩm mỹ cao và dễ sử dụng.',
+            'description' => 'Designs the user interface and experience, ensuring the product is aesthetically pleasing and easy to use.',
             'skills' => ['Photoshop', 'Illustrator', 'Sketch', 'InVision', 'Prototype']
         ],
         [
-            'name' => 'Hoàng Ngọc Anh',
+            'name' => 'Hoang Ngoc Anh',
             'position' => 'DevOps Engineer',
             'avatar' => 'HNA',
-            'description' => 'Quản lý hạ tầng, triển khai ứng dụng và đảm bảo hệ thống hoạt động ổn định 24/7.',
+            'description' => 'Manages infrastructure, deploys applications, and ensures the system operates stably 24/7.',
             'skills' => ['Docker', 'Kubernetes', 'Jenkins', 'Linux', 'Monitoring']
         ],
         [
-            'name' => 'Nguyễn Lê Minh',
+            'name' => 'Nguyen Le Minh',
             'position' => 'Quality Assurance',
             'avatar' => 'NLM',
-            'description' => 'Đảm bảo chất lượng sản phẩm thông qua kiểm thử tự động và thủ công, phát hiện và báo cáo lỗi.',
+            'description' => 'Ensures product quality through automated and manual testing, detecting and reporting bugs.',
             'skills' => ['Manual Testing', 'Selenium', 'Postman', 'Bug Tracking', 'Test Planning']
         ]
     ];
@@ -58,8 +58,8 @@
 
     <div class="container">
         <div class="header">
-            <h1>Về Chúng Tôi</h1>
-            <p>Đội ngũ phát triển chuyên nghiệp với niềm đam mê công nghệ</p>
+            <h1>About Us</h1>
+            <p>A professional development team with a passion for technology</p>
         </div>
 
         <div class="team-grid">
@@ -91,9 +91,9 @@
         font-family: 'Arial', sans-serif;
         line-height: 1.6;
         color: #000;
-        /* chữ đen */
+        /* black text */
         background-color: #fff;
-        /* nền trắng */
+        /* white background */
         min-height: 100vh;
     }
 
@@ -115,16 +115,16 @@
         font-size: 3rem;
         margin-bottom: 10px;
         color: #ff6600;
-        /* màu cam cho tiêu đề */
+        /* orange color for the title */
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .header p {
         font-size: 1.2rem;
         color: #000;
-        /* màu đen cho mô tả */
+        /* black color for the description */
         opacity: 1;
-        /* hiện rõ chữ hơn */
+        /* make text more visible */
     }
 
 

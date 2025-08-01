@@ -1,7 +1,7 @@
 <?php
 function register_user($db, $username, $password, $email, $full_name, $phone) {
     try {
-        // Check if username exists
+        // Check if username or email already exists
         $check_query = "SELECT user_id FROM users WHERE username = :username OR email = :email";
         $check_stmt = $db->prepare($check_query);
         $check_stmt->bindParam(':username', $username);
@@ -9,7 +9,7 @@ function register_user($db, $username, $password, $email, $full_name, $phone) {
         $check_stmt->execute();
         
         if ($check_stmt->rowCount() > 0) {
-            return ['success' => false, 'message' => 'Tên đăng nhập hoặc email đã tồn tại'];
+            return ['success' => false, 'message' => 'Username or email already exists.'];
         }
         
         // Hash password
@@ -26,12 +26,12 @@ function register_user($db, $username, $password, $email, $full_name, $phone) {
         $stmt->bindParam(':phone', $phone);
         
         if ($stmt->execute()) {
-            return ['success' => true, 'message' => 'Đăng ký thành công'];
+            return ['success' => true, 'message' => 'Registration successful.'];
         } else {
-            return ['success' => false, 'message' => 'Có lỗi xảy ra khi đăng ký'];
+            return ['success' => false, 'message' => 'An error occurred during registration.'];
         }
     } catch (Exception $e) {
-        return ['success' => false, 'message' => 'Lỗi hệ thống: ' . $e->getMessage()];
+        return ['success' => false, 'message' => 'System error: ' . $e->getMessage()];
     }
 }
 
@@ -53,13 +53,13 @@ function login_user($db, $username, $password) {
                 $_SESSION['email'] = $user['email'];
                 $_SESSION['role'] = $user['role'];
                 
-                return ['success' => true, 'message' => 'Đăng nhập thành công'];
+                return ['success' => true, 'message' => 'Login successful.'];
             }
         }
         
-        return ['success' => false, 'message' => 'Tên đăng nhập hoặc mật khẩu không đúng'];
+        return ['success' => false, 'message' => 'Incorrect username or password.'];
     } catch (Exception $e) {
-        return ['success' => false, 'message' => 'Lỗi hệ thống: ' . $e->getMessage()];
+        return ['success' => false, 'message' => 'System error: ' . $e->getMessage()];
     }
 }
 

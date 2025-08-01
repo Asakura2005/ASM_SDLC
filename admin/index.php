@@ -1,5 +1,5 @@
 <?php
-$page_title = "Quản trị";
+$page_title = "Admin Dashboard";
 include '../includes/header.php';
 include '../functions/auth.php';
 
@@ -43,11 +43,11 @@ $recent_orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <div class="container my-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Bảng điều khiển quản trị</h1>
+        <h1>Admin Dashboard</h1>
         <div class="btn-group">
-            <a href="menu_items.php" class="btn btn-primary">Quản lý món ăn</a>
-            <a href="orders.php" class="btn btn-primary">Quản lý đơn hàng</a>
-            <a href="discounts.php" class="btn btn-primary">Mã giảm giá</a>
+            <a href="menu_items.php" class="btn btn-primary">Manage Menu Items</a>
+            <a href="orders.php" class="btn btn-primary">Manage Orders</a>
+            <a href="discounts.php" class="btn btn-primary">Discount Codes</a>
         </div>
     </div>
     
@@ -59,7 +59,7 @@ $recent_orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="d-flex justify-content-between">
                         <div>
                             <h4><?php echo number_format($stats['total_orders']); ?></h4>
-                            <p class="mb-0">Tổng đơn hàng</p>
+                            <p class="mb-0">Total Orders</p>
                         </div>
                         <div class="align-self-center">
                             <i class="fas fa-shopping-cart fa-2x"></i>
@@ -74,7 +74,7 @@ $recent_orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="d-flex justify-content-between">
                         <div>
                             <h4><?php echo number_format($stats['total_revenue']); ?>đ</h4>
-                            <p class="mb-0">Doanh thu</p>
+                            <p class="mb-0">Total Revenue</p>
                         </div>
                         <div class="align-self-center">
                             <i class="fas fa-dollar-sign fa-2x"></i>
@@ -89,7 +89,7 @@ $recent_orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="d-flex justify-content-between">
                         <div>
                             <h4><?php echo number_format($stats['total_items']); ?></h4>
-                            <p class="mb-0">Món ăn</p>
+                            <p class="mb-0">Menu Items</p>
                         </div>
                         <div class="align-self-center">
                             <i class="fas fa-utensils fa-2x"></i>
@@ -104,7 +104,7 @@ $recent_orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="d-flex justify-content-between">
                         <div>
                             <h4><?php echo number_format($stats['total_users']); ?></h4>
-                            <p class="mb-0">Khách hàng</p>
+                            <p class="mb-0">Customers</p>
                         </div>
                         <div class="align-self-center">
                             <i class="fas fa-users fa-2x"></i>
@@ -118,22 +118,22 @@ $recent_orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <!-- Recent Orders -->
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0">Đơn hàng gần đây</h5>
+            <h5 class="mb-0">Recent Orders</h5>
         </div>
         <div class="card-body">
             <?php if (empty($recent_orders)): ?>
-                <p class="text-muted">Chưa có đơn hàng nào</p>
+                <p class="text-muted">No orders yet</p>
             <?php else: ?>
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Mã đơn</th>
-                                <th>Khách hàng</th>
-                                <th>Ngày đặt</th>
-                                <th>Tổng tiền</th>
-                                <th>Trạng thái</th>
-                                <th>Thao tác</th>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Order Date</th>
+                                <th>Total Amount</th>
+                                <th>Status</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -151,18 +151,18 @@ $recent_orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     ?>">
                                         <?php 
                                         $status_text = [
-                                            'pending' => 'Chờ xác nhận',
-                                            'confirmed' => 'Đã xác nhận',
-                                            'delivered' => 'Đã giao',
-                                            'cancelled' => 'Đã hủy'
+                                            'pending' => 'Pending',
+                                            'confirmed' => 'Confirmed',
+                                            'delivered' => 'Delivered',
+                                            'cancelled' => 'Cancelled'
                                         ];
                                         echo $status_text[$order['status']];
                                         ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="orders.php?view=<?php echo $order['order_id']; ?>" 
-                                       class="btn btn-sm btn-outline-primary">Xem</a>
+                                    <a href="orders.php?view=<?php echo $order['order_id']; ?>"
+                                       class="btn btn-sm btn-outline-primary">View</a>
                                 </td>
                             </tr>
                             <?php endforeach; ?>

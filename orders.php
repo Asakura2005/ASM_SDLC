@@ -1,5 +1,5 @@
 <?php
-$page_title = "Đơn hàng của tôi";
+$page_title = "My Orders";
 include '../fooddelivery/includes/header.php';
 include '../fooddelivery/functions/auth.php';
 include '../fooddelivery/functions/orders.php';
@@ -25,7 +25,7 @@ if ($_POST && isset($_POST['submit_rating'])) {
             $rating_query = "INSERT INTO ratings (user_id, item_id, score, comment) VALUES (?, ?, ?, ?)";
             $rating_stmt = $db->prepare($rating_query);
             if ($rating_stmt->execute([$_SESSION['user_id'], $item_id, $score, $comment])) {
-                $_SESSION['success'] = 'Cảm ơn bạn đã đánh giá!';
+                $_SESSION['success'] = 'Thank you for your rating!';
             }
         }
     }
@@ -35,7 +35,7 @@ if ($_POST && isset($_POST['submit_rating'])) {
 ?>
 
 <div class="container my-4">
-    <h1 class="mb-4">Đơn hàng của tôi</h1>
+    <h1 class="mb-4">My Orders</h1>
     
     <?php if (isset($_SESSION['success'])): ?>
         <div class="alert alert-success alert-dismissible fade show">
@@ -47,9 +47,9 @@ if ($_POST && isset($_POST['submit_rating'])) {
     <?php if (empty($orders)): ?>
         <div class="text-center py-5">
             <i class="fas fa-receipt fa-3x text-muted mb-3"></i>
-            <h4>Chưa có đơn hàng nào</h4>
-            <p class="text-muted">Hãy đặt món ăn đầu tiên của bạn</p>
-            <a href="menu.php" class="btn btn-primary">Xem thực đơn</a>
+            <h4>You have no orders yet</h4>
+            <p class="text-muted">Let's place your first order</p>
+            <a href="menu.php" class="btn btn-primary">View Menu</a>
         </div>
     <?php else: ?>
         <?php foreach ($orders as $order): ?>
@@ -57,7 +57,7 @@ if ($_POST && isset($_POST['submit_rating'])) {
             <div class="card-header">
                 <div class="row align-items-center">
                     <div class="col-md-6">
-                        <h6 class="mb-0">Đơn hàng #<?php echo $order['order_id']; ?></h6>
+                        <h6 class="mb-0">Order #<?php echo $order['order_id']; ?></h6>
                         <small class="text-muted"><?php echo date('d/m/Y H:i', strtotime($order['order_date'])); ?></small>
                     </div>
                     <div class="col-md-6 text-md-end">
@@ -68,10 +68,10 @@ if ($_POST && isset($_POST['submit_rating'])) {
                         ?>">
                             <?php 
                             $status_text = [
-                                'pending' => 'Chờ xác nhận',
-                                'confirmed' => 'Đã xác nhận',
-                                'delivered' => 'Đã giao',
-                                'cancelled' => 'Đã hủy'
+                                'pending' => 'Pending',
+                                'confirmed' => 'Confirmed',
+                                'delivered' => 'Delivered',
+                                'cancelled' => 'Cancelled'
                             ];
                             echo $status_text[$order['status']];
                             ?>
@@ -94,7 +94,7 @@ if ($_POST && isset($_POST['submit_rating'])) {
                     </div>
                     <div class="col-md-6">
                         <h6 class="mb-1"><?php echo htmlspecialchars($item['name']); ?></h6>
-                        <small class="text-muted">Số lượng: <?php echo $item['quantity']; ?> × <?php echo number_format($item['price']); ?>đ</small>
+                        <small class="text-muted">Quantity: <?php echo $item['quantity']; ?> × <?php echo number_format($item['price']); ?>đ</small>
                     </div>
                     <div class="col-md-2">
                         <strong><?php echo number_format($item['price'] * $item['quantity']); ?>đ</strong>
@@ -112,7 +112,7 @@ if ($_POST && isset($_POST['submit_rating'])) {
                             <?php if (!$already_rated): ?>
                             <button type="button" class="btn btn-sm btn-outline-primary" 
                                     data-bs-toggle="modal" data-bs-target="#ratingModal<?php echo $item['item_id']; ?>">
-                                <i class="fas fa-star me-1"></i>Đánh giá
+                                <i class="fas fa-star me-1"></i>Rate
                             </button>
                             
                             <!-- Rating Modal -->
@@ -120,7 +120,7 @@ if ($_POST && isset($_POST['submit_rating'])) {
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title">Đánh giá món ăn</h5>
+                                            <h5 class="modal-title">Rate this Item</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
                                         <form method="POST">
@@ -129,7 +129,7 @@ if ($_POST && isset($_POST['submit_rating'])) {
                                                 <h6><?php echo htmlspecialchars($item['name']); ?></h6>
                                                 
                                                 <div class="mb-3">
-                                                    <label class="form-label">Điểm số (1-5 sao)</label>
+                                                    <label class="form-label">Score (1-5 stars)</label>
                                                     <div class="rating-stars">
                                                         <?php for ($i = 1; $i <= 5; $i++): ?>
                                                         <input type="radio" name="score" value="<?php echo $i; ?>" 
@@ -141,14 +141,14 @@ if ($_POST && isset($_POST['submit_rating'])) {
                                                 </div>
                                                 
                                                 <div class="mb-3">
-                                                    <label for="comment<?php echo $item['item_id']; ?>" class="form-label">Nhận xét</label>
+                                                    <label for="comment<?php echo $item['item_id']; ?>" class="form-label">Comment</label>
                                                     <textarea class="form-control" name="comment" 
                                                               id="comment<?php echo $item['item_id']; ?>" rows="3"></textarea>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                                <button type="submit" name="submit_rating" class="btn btn-primary">Gửi đánh giá</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" name="submit_rating" class="btn btn-primary">Submit Rating</button>
                                             </div>
                                         </form>
                                     </div>
@@ -156,7 +156,7 @@ if ($_POST && isset($_POST['submit_rating'])) {
                             </div>
                             <?php else: ?>
                             <small class="text-success">
-                                <i class="fas fa-check me-1"></i>Đã đánh giá
+                                <i class="fas fa-check me-1"></i>Rated
                             </small>
                             <?php endif; ?>
                         <?php endif; ?>

@@ -1,5 +1,5 @@
 <?php
-$page_title = "Trang chủ";
+$page_title = "Home";
 include '../fooddelivery/includes/header.php';
 
 // Get featured items
@@ -17,10 +17,10 @@ $featured_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <!-- Hero Section -->
     <div class="row align-items-center mb-5">
         <div class="col-lg-6">
-            <h1 class="display-4 fw-bold text-primary">Giao hàng nhanh chóng</h1>
-            <p class="lead">Thưởng thức những món ăn ngon nhất từ các nhà hàng uy tín, giao hàng tận nơi trong 30 phút.</p>
+            <h1 class="display-4 fw-bold text-primary">Fast & Reliable Delivery</h1>
+            <p class="lead">Enjoy the best dishes from top-rated restaurants, delivered to your door in 30 minutes.</p>
             <a href="menu.php" class="btn btn-primary btn-lg">
-                <i class="fas fa-utensils me-2"></i>Xem thực đơn
+                <i class="fas fa-utensils me-2"></i>View Menu
             </a>
         </div>
         <div class="col-lg-6">
@@ -35,8 +35,8 @@ $featured_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="card h-100 border-0 shadow-sm">
                 <div class="card-body">
                     <i class="fas fa-shipping-fast fa-3x text-primary mb-3"></i>
-                    <h5>Giao hàng nhanh</h5>
-                    <p class="text-muted">Giao hàng trong vòng 30 phút</p>
+                    <h5>Fast Delivery</h5>
+                    <p class="text-muted">Get your order within 30 minutes</p>
                 </div>
             </div>
         </div>
@@ -44,8 +44,8 @@ $featured_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="card h-100 border-0 shadow-sm">
                 <div class="card-body">
                     <i class="fas fa-star fa-3x text-primary mb-3"></i>
-                    <h5>Chất lượng cao</h5>
-                    <p class="text-muted">Món ăn tươi ngon, đảm bảo vệ sinh</p>
+                    <h5>High Quality</h5>
+                    <p class="text-muted">Fresh, delicious, and hygienic food</p>
                 </div>
             </div>
         </div>
@@ -53,15 +53,15 @@ $featured_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="card h-100 border-0 shadow-sm">
                 <div class="card-body">
                     <i class="fas fa-tags fa-3x text-primary mb-3"></i>
-                    <h5>Giá cả hợp lý</h5>
-                    <p class="text-muted">Nhiều ưu đãi và mã giảm giá</p>
+                    <h5>Affordable Prices</h5>
+                    <p class="text-muted">Great deals and discount codes</p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Featured Items -->
-    <h2 class="text-center mb-4">Món ăn nổi bật</h2>
+    <h2 class="text-center mb-4">Featured Dishes</h2>
     <div class="row">
         <?php foreach ($featured_items as $item): ?>
         <div class="col-lg-4 col-md-6 mb-4">
@@ -91,7 +91,7 @@ $featured_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
     <div class="text-center mt-4">
-        <a href="menu.php" class="btn btn-outline-primary btn-lg">Xem tất cả món ăn</a>
+        <a href="menu.php" class="btn btn-outline-primary btn-lg">View All Dishes</a>
     </div>
 </div>
 

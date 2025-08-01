@@ -32,7 +32,7 @@ if ($_POST) {
         } else {
             $result = add_user_address($db, $_SESSION['user_id'], $address_data);
             if ($result['success']) {
-                $_SESSION['success'] = 'Thêm địa chỉ thành công';
+                $_SESSION['success'] = 'Address added successfully.';
             } else {
                 $_SESSION['error'] = $result['message'];
             }
@@ -57,7 +57,7 @@ if ($_POST) {
         } else {
             $result = update_user_address($db, $address_id, $_SESSION['user_id'], $address_data);
             if ($result['success']) {
-                $_SESSION['success'] = 'Cập nhật địa chỉ thành công';
+                $_SESSION['success'] = 'Address updated successfully.';
             } else {
                 $_SESSION['error'] = $result['message'];
             }
@@ -68,7 +68,7 @@ if ($_POST) {
         $address_id = (int)$_POST['address_id'];
         $result = delete_user_address($db, $address_id, $_SESSION['user_id']);
         if ($result['success']) {
-            $_SESSION['success'] = 'Xóa địa chỉ thành công';
+            $_SESSION['success'] = 'Address deleted successfully.';
         } else {
             $_SESSION['error'] = $result['message'];
         }

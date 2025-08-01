@@ -11,7 +11,7 @@ if ($_POST && isset($_POST['item_id'])) {
     
     if ($item_id > 0 && $quantity > 0) {
         add_to_cart($item_id, $quantity);
-        $_SESSION['success'] = 'Đã thêm món ăn vào giỏ hàng';
+        $_SESSION['success'] = 'Added the dish to the cart successfully.';
     }
 }
 

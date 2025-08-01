@@ -1,5 +1,5 @@
 <?php
-$page_title = "Thực đơn";
+$page_title = "Menu";
 include '/xampp/htdocs/PHP/fooddelivery/includes/header.php';
 
 // Get categories
@@ -39,14 +39,14 @@ $menu_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <div class="container my-4">
-    <h1 class="text-center mb-4">Thực đơn</h1>
+    <h1 class="text-center mb-4">Menu</h1>
     
     <!-- Search and Filter -->
     <div class="row mb-4">
         <div class="col-md-8">
             <form method="GET" class="d-flex">
                 <input type="text" class="form-control me-2" name="search" 
-                       placeholder="Tìm kiếm món ăn..." value="<?php echo htmlspecialchars($search); ?>">
+                       placeholder="Search for dishes..." value="<?php echo htmlspecialchars($search); ?>">
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-search"></i>
                 </button>
@@ -58,7 +58,7 @@ $menu_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
                 <?php endif; ?>
                 <select class="form-select" name="category" onchange="this.form.submit()">
-                    <option value="">Tất cả danh mục</option>
+                    <option value="">All Categories</option>
                     <?php foreach ($categories as $cat): ?>
                         <option value="<?php echo $cat['category_id']; ?>" 
                                 <?php echo $category_id == $cat['category_id'] ? 'selected' : ''; ?>>
@@ -74,8 +74,8 @@ $menu_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php if (empty($menu_items)): ?>
         <div class="text-center py-5">
             <i class="fas fa-search fa-3x text-muted mb-3"></i>
-            <h4>Không tìm thấy món ăn nào</h4>
-            <p class="text-muted">Thử tìm kiếm với từ khóa khác hoặc chọn danh mục khác</p>
+            <h4>No dishes found</h4>
+            <p class="text-muted">Try searching with a different keyword or selecting another category.</p>
         </div>
     <?php else: ?>
         <div class="row">
@@ -102,11 +102,11 @@ $menu_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <form method="POST" action="add_to_cart.php" class="d-inline">
                                     <input type="hidden" name="item_id" value="<?php echo $item['item_id']; ?>">
                                     <button type="submit" class="btn btn-primary btn-sm">
-                                        <i class="fas fa-cart-plus me-1"></i>Thêm
+                                        <i class="fas fa-cart-plus me-1"></i>Add
                                     </button>
                                 </form>
                                 <?php else: ?>
-                                <a href="login.php" class="btn btn-outline-primary btn-sm">Đăng nhập để mua</a>
+                                <a href="login.php" class="btn btn-outline-primary btn-sm">Login to buy</a>
                                 <?php endif; ?>
                             </div>
                         </div>
